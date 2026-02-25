@@ -105,7 +105,7 @@ unset($_SESSION['user_input']);
                     </div>
                     <small class="text-[11px] text-[#718096] mt-1.5 block"><i>Must be at least 8 characters long.</i></small>
                 </div>
-
+        
                 <div class="mb-6">
                     <label class="block text-sm font-semibold mb-1.5 text-[#4a5568]">Confirm Password</label>
                     <div class="relative">

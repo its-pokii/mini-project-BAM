@@ -10,23 +10,17 @@ $token = $_GET['token'] ?? '';
 if (!$token) {
     echo "<p style='color: red;'>Invalid or expired verification link!</p>";
 }
-
+$message = "This window is expired. You can close it!";
 // Look for the user with this token
 $sql = "SELECT id, email, verified FROM users WHERE verification_token = ?";
 $stmt = mysqli_prepare($connector, $sql);
 mysqli_stmt_bind_param($stmt, "s", $token);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
-
-if (mysqli_num_rows($result) === 0) {
-    echo "<p class='text-center font-bold text-2xl' style='color: red;'>Invalid or expired verification link!</p>";
-}
-
 $user = mysqli_fetch_assoc($result);
 
-if ($user['verified'] == '1') {
-    $message = "<p style='color: yellow;'>Your account is already verified. You can log in now.!</p>";
-    
+if (!$user) {
+    echo "<p class='text-center font-bold text-2xl' style='color: red;'>Invalid or expired verification link!</p>";
 } else {
     // Mark user as verified
     $update_sql = "UPDATE users SET status = 'accepted', verified = '1', verification_token = NULL WHERE id = ?";
@@ -37,6 +31,8 @@ if ($user['verified'] == '1') {
     $message = "<p style='color: green;'>Your account has been successfully verified! You can now log in.</p>";
     
 }
+
+
 ?>
 <style>
     body {

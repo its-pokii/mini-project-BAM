@@ -2,9 +2,9 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '../../vendor/autoload.php';
+require '../tools/vendor/autoload.php';
 
-function send_verification_email($user_email, $user_name, $token) {
+function send_verification_email($user_email, $user_name, $verification_link) {
     $mail = new PHPMailer(true);
     
     try {
@@ -22,7 +22,6 @@ function send_verification_email($user_email, $user_name, $token) {
         $mail->addAddress($user_email, $user_name);
         
         // Content
-        $verification_link = $_SESSION['verification_link'] . "?token=" . $token;
         $mail->isHTML(true);
         $mail->Subject = 'Verify Your UCA Connect Account';
         $mail->Body = "

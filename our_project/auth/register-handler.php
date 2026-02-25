@@ -175,9 +175,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         mysqli_stmt_bind_param($stmt, 'si', $token, $user_id);
         mysqli_stmt_execute($stmt);
 
-        $verification_link = "http://localhost/alumni-project/our_project/auth/verify-email-handler.php";
-        send_verification_email($email, $first_name, $token);
+        $verification_link = "http://localhost/alumni-project/our_project/auth/verify-email-handler.php?token=" . $token;
+        send_verification_email($email, $first_name, $verification_link);
         $_SESSION['email_to_verify'] = $email;
+        $_SESSION['token'] = $token;
         $_SESSION['verification_link'] = $verification_link;
         header("Location: ../register.php");
         exit;
