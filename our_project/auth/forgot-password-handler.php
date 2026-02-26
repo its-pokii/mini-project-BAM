@@ -5,6 +5,7 @@ require 'reset-password-mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
+    $_SESSION['forgot_email'] = $email;
     $get_password_errors = [];
 
 

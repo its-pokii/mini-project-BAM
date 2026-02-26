@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // ====INSERT INFO INTO USERS TABLE====
     $sql = "UPDATE users SET password = ? WHERE email = ?";
     $stmt = mysqli_prepare($connector, $sql);
-    mysqli_stmt_bind_param($stmt, 'ss', $new_password, $email);
+    mysqli_stmt_bind_param($stmt, 'ss', $new_password, $_SESSION['forgot_email']);
     mysqli_stmt_execute($stmt);
     
     if (!mysqli_stmt_execute($stmt)) {

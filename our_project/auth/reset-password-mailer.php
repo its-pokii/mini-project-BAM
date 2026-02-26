@@ -27,7 +27,7 @@ function send_verification_email($user_email, $user_name, $reset_password_link) 
         $mail->Body = "
             <h2>Hello again to UCA Connect, $user_name!</h2>
             <p>Click the link below to reset your password:</p>
-            <a href='$reset_password_link'>Verify Email</a>
+            <a href='$reset_password_link'>Reset Password</a>
         ";
         
         $mail->send();
