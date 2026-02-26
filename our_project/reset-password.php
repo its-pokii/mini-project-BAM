@@ -1,12 +1,12 @@
-<?php 
+<?php
 session_start();
-if (isset($_SESSION['login_errors'])) {
+if (isset($_SESSION['reset_password_errors'])) {
     echo '<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">';
-    foreach ($_SESSION['login_errors'] as $error) {
-        echo '<p class="text-center">' . htmlspecialchars($error) . '</p>';
+    foreach ($_SESSION['reset_password_errors'] as $reset_password_errors) {
+        echo '<p class="text-center">' . htmlspecialchars($reset_password_errors) . '</p>';
     }
     echo '</div>';
-    unset($_SESSION['login_errors']);
+    unset($_SESSION['reset_password_errors']);
 }
 ?>
 
@@ -32,41 +32,36 @@ if (isset($_SESSION['login_errors'])) {
                 </div>
                 <div class="flex gap-[1em]">
                     <a href="register.php" class="no-underline bg-[#228cef] text-white border border-[#edf8fb] px-8 py-2.5 rounded-lg font-semibold hover:bg-blue-400 inline-block">Register</a>
-                    <a href="<?php echo $_SERVER['PHP_SELF'] ?>" class="no-underline bg-white text-black border border-[#edf8fb] px-8 py-2.5 rounded-lg font-semibold hover:bg-gray-200 inline-block">Login</a>
+                    <a href="login.php" class="no-underline bg-white text-black border border-[#edf8fb] px-8 py-2.5 rounded-lg font-semibold hover:bg-gray-200 inline-block">Login</a>
                 </div>
             </div>
         </nav>
 
         <main class="grow flex justify-center items-center p-5">
             <div class="bg-white border border-[#e2e8f0] rounded-xl w-full max-w-[400px] p-10 shadow-md">
-                <h2 class="text-center text-2xl font-bold mb-8 text-[#1a202c]">Login to UCA Connect</h2>
+                <h2 class="text-center text-2xl font-bold mb-8 text-[#1a202c]">Reset your password</h2>
 
-                <form action="auth/login-handler.php" method="post">
-                    <div class="mb-5">
-                        <label class="block text-sm font-semibold mb-2 text-[#4a5568]">Email</label>
-                        <div class="relative">
-                            <i class="fa-regular fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a0aec0]"></i>
-                            <input name="email" type="email" placeholder="your.email@uca.ac.ma" required
-                                class="w-full pl-[42px] pr-4 py-3 bg-[#f8fafc] border border-[#cbd5e0] rounded-lg text-sm outline-none transition focus:border-[#2563eb] focus:bg-white">
-                        </div>
-                    </div>
-
-                    <div class="mb-5">
-                        <label class="block text-sm font-semibold mb-2 text-[#4a5568]">Password</label>
+                <form action="auth/reset-password-handler.php" method="post">
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold mb-1.5 text-[#4a5568]"> New Password</label>
                         <div class="relative">
                             <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a0aec0]"></i>
-                            <input name="password" type="password" placeholder="********" required
-                                class="w-full pl-[42px] pr-4 py-3 bg-[#f8fafc] border border-[#cbd5e0] rounded-lg text-sm outline-none transition focus:border-[#2563eb] focus:bg-white">
+                            <input name="new_password" type="password" placeholder="********" class="w-full pl-[44px] pr-4 py-2.5 bg-[#f8fafc] border border-[#cbd5e0] rounded-md text-sm outline-none">
+                        </div>
+                        <small class="text-[11px] text-[#718096] mt-1.5 block"><i>Must be at least 8 characters long.</i></small>
+                    </div>
+            
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold mb-1.5 text-[#4a5568]">Confirm Password</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a0aec0]"></i>
+                            <input name="confirm_new_password" type="password" placeholder="********" class="w-full pl-[44px] pr-4 py-2.5 bg-[#f8fafc] border border-[#cbd5e0] rounded-md text-sm outline-none">
                         </div>
                     </div>
 
-                    <div class="text-right mb-6">
-                        <a href="forgot-password.php" class="text-xs text-[#228cef] hover:text-blue-300 no-underline font-semibold">Forgot password?</a>
-                    </div>
-
-                    <button type="submit"
+                    <button name="save" type="submit"
                         class="w-full bg-[#228cef] hover:bg-blue-300 text-white border-none py-3 rounded-lg font-bold text-base cursor-pointer transition">
-                        Login
+                        Save
                     </button>
 
                     <p class="text-center mt-6 text-sm text-[#718096]">

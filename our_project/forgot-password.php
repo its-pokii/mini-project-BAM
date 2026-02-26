@@ -1,12 +1,19 @@
-<?php 
+<?php
 session_start();
-if (isset($_SESSION['login_errors'])) {
+if (isset($_SESSION['get_password_errors'])) {
     echo '<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">';
-    foreach ($_SESSION['login_errors'] as $error) {
+    foreach ($_SESSION['get_password_errors'] as $error) {
         echo '<p class="text-center">' . htmlspecialchars($error) . '</p>';
     }
     echo '</div>';
-    unset($_SESSION['login_errors']);
+    unset($_SESSION['get_password_errors']);
+}
+
+if (isset($_SESSION['success_reset'])) {
+    echo '<div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">';
+    echo '<p class="text-center">' . htmlspecialchars($_SESSION['success_reset']) . '</p>';
+    echo '</div>';
+    unset($_SESSION['success_reset']);
 }
 ?>
 
@@ -39,9 +46,9 @@ if (isset($_SESSION['login_errors'])) {
 
         <main class="grow flex justify-center items-center p-5">
             <div class="bg-white border border-[#e2e8f0] rounded-xl w-full max-w-[400px] p-10 shadow-md">
-                <h2 class="text-center text-2xl font-bold mb-8 text-[#1a202c]">Login to UCA Connect</h2>
+                <h2 class="text-center text-2xl font-bold mb-8 text-[#1a202c]">Enter your registered email</h2>
 
-                <form action="auth/login-handler.php" method="post">
+                <form action="auth/forgot-password-handler.php" method="post">
                     <div class="mb-5">
                         <label class="block text-sm font-semibold mb-2 text-[#4a5568]">Email</label>
                         <div class="relative">
@@ -51,22 +58,9 @@ if (isset($_SESSION['login_errors'])) {
                         </div>
                     </div>
 
-                    <div class="mb-5">
-                        <label class="block text-sm font-semibold mb-2 text-[#4a5568]">Password</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a0aec0]"></i>
-                            <input name="password" type="password" placeholder="********" required
-                                class="w-full pl-[42px] pr-4 py-3 bg-[#f8fafc] border border-[#cbd5e0] rounded-lg text-sm outline-none transition focus:border-[#2563eb] focus:bg-white">
-                        </div>
-                    </div>
-
-                    <div class="text-right mb-6">
-                        <a href="forgot-password.php" class="text-xs text-[#228cef] hover:text-blue-300 no-underline font-semibold">Forgot password?</a>
-                    </div>
-
                     <button type="submit"
                         class="w-full bg-[#228cef] hover:bg-blue-300 text-white border-none py-3 rounded-lg font-bold text-base cursor-pointer transition">
-                        Login
+                        Submit
                     </button>
 
                     <p class="text-center mt-6 text-sm text-[#718096]">
