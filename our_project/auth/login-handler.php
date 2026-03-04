@@ -48,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['role'] = $user_info['role'];
                 
                 if ($user_info['role'] == 'student') {
-                    header("Location: ../student/test_student.php");
+                    header("Location: ../student/01-dashboard.php");
                     exit;
                 } elseif ($user_info['role'] == 'alumni') {
-                    header("Location: ../alumni/dashboard_alumni.php");
+                    header("Location: ../alumni/test_alumni.php");
                     exit;
                 } else {
-                    header("Location: ../admin/dashboard_admin.php");
+                    header("Location: ../admin/dashboard.php");
                     exit;
                 }
             }

@@ -275,7 +275,7 @@ unset($_SESSION['user_input']);
     </main>
 
     <?php
-        include("C:/xampp/htdocs/alumni-project/our_project/includes/copyright.php");
+        include("includes/copyright.php");
     ?>
 
     <style>
