@@ -51,10 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     header("Location: ../student/test_student.php");
                     exit;
                 } elseif ($user_info['role'] == 'alumni') {
-                    header("Location: ../alumni/test_alumni.php");
+                    header("Location: ../alumni/dashboard_alumni.php");
                     exit;
                 } else {
-                    header("Location: ../admin/dashboard.php");
+                    header("Location: ../admin/dashboard_admin.php");
                     exit;
                 }
             }
