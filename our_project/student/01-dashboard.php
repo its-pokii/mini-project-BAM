@@ -1,15 +1,15 @@
 <?php
-session_start(); 
-require_once('../auth/config.php');
-$user_id = (int)$_SESSION['user_id'];
-$stmt = mysqli_prepare($connector, 
-    "SELECT * FROM users WHERE id = ?"
-);
-mysqli_stmt_bind_param($stmt, "i", $user_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$user   = mysqli_fetch_assoc($result);
+include("tools/userHeaderName.php"); 
 ?>
+
+<?php 
+$stmt1 = mysqli_prepare($connector, 'SELECT COUNT(*) AS total_rows FROM alumni_profiles ');
+mysqli_execute($stmt1);
+$result1 = mysqli_stmt_get_result($stmt1);
+$count = mysqli_fetch_column($result1);
+
+?>
+
 
 
 <!DOCTYPE html>
@@ -49,7 +49,7 @@ $user   = mysqli_fetch_assoc($result);
       <div class="grid grid-cols-4 gap-4 mb-8">
         <div class="bg-white border border-gray-200 rounded-xl p-5">
           <div class="flex justify-between items-center text-sm text-gray-500 mb-2"><span>Alumni Registered</span></div>
-          <div class="text-3xl font-bold text-gray-900">5,230</div>
+          <div class="text-3xl font-bold text-gray-900"><?php echo $count ?> </div>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-5">
           <div class="flex justify-between items-center text-sm text-gray-500 mb-2"><span>Your Connections</span></div>

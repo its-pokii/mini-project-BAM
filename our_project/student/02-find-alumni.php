@@ -1,14 +1,5 @@
 <?php
-session_start(); 
-require_once('../auth/config.php');
-$user_id = (int)$_SESSION['user_id'];
-$stmt = mysqli_prepare($connector, 
-    "SELECT * FROM users WHERE id = ?"
-);
-mysqli_stmt_bind_param($stmt, "i", $user_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$user   = mysqli_fetch_assoc($result);
+include("tools/userHeaderName.php"); 
 ?>
 
 
@@ -93,19 +84,6 @@ $user   = mysqli_fetch_assoc($result);
 
 <script>
 let alumni = [];
-  fetch('tools/alumniProfiles.php')
-  .then(res => {
-    console.log('Status:', res.status);      // should print 200
-    console.log('OK:', res.ok);              // should print true
-    return res.json();
-  })
-  .then(data => {
-    console.log('Data received:', data);     // should print array of alumni
-    console.log('Count:', data.length);      // should print number > 0
-  })
-  .catch(err => {
-    console.log('Fetch failed:', err);       // prints if something went wrong
-  });
 
 fetch('tools/alumniProfiles.php')
 .then(res => res.json())
@@ -158,7 +136,7 @@ function renderAlumni(list) {
       </div>
 
       <!-- mentor badge — MySQL stores 1 or 0, not true/false -->
-      ${a.willing_to_mentor == 1 
+      ${a.willing_to_mentor == "Yes"
         ? '<span class="inline-block mt-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-0.5 rounded-full">Willing to Mentor</span>' 
         : ''}
 
@@ -181,7 +159,7 @@ function filterAlumni() {
       (a.current_position ?? '').toLowerCase().includes(q) ||
       (a.major             ?? '').toLowerCase().includes(q);
 
-    return match && (mentorOnly ? a.willing_to_mentor == 1 : true);
+    return match && (mentorOnly ? a.willing_to_mentor == 'Yes' : true);
   });
 
   renderAlumni(filtered);
