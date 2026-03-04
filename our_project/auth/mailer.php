@@ -27,7 +27,11 @@ function send_verification_email($user_email, $user_name, $verification_link) {
         $mail->Body = "
             <h2>Welcome to UCA Connect, $user_name!</h2>
             <p>Click the link below to verify your email:</p>
-            <a href='$verification_link'>Verify Email</a>
+            <div class='box-button' style='cursor:pointer;border:4px solid black;background-color:gray;padding-bottom:10px;transition:0.1s ease-in-out;user-select:none;display:inline-block;'>
+                <a href='$verification_link' class='button' style='background-color:#dddddd;border:4px solid #fff;padding:3px 8px;text-decoration:none;display:inline-block;'>
+                    <span style='font-size:1.2em;letter-spacing:1px;'>Verify Email</span>
+                </a>
+            </div>
         ";
         
         $mail->send();
