@@ -1,5 +1,3 @@
-
-
 <header>
 <div class="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 flex-shrink-0">
     <div class="flex items-center gap-2 font-bold text-lg text-blue-600">
