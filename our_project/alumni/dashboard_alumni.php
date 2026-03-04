@@ -1,6 +1,9 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 session_start();
 
+// 1. Security Check
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
     header("Location: ../login.php");
     exit;
@@ -8,69 +11,78 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'alumni') {
 
 require_once("../auth/config.php");
 
+// $connector is an object from your config.php
 $user_id = $_SESSION['user_id'];
 
-// Get alumni info
-$stmt = mysqli_prepare($connector, "SELECT first_name, last_name, profile_picture, job_title, company FROM users WHERE id = ?");
-mysqli_stmt_bind_param($stmt, 'i', $user_id);
-mysqli_stmt_execute($stmt);
-mysqli_stmt_bind_result($stmt, $first_name, $last_name, $profile_picture, $job_title, $company);
-mysqli_stmt_fetch($stmt);
-mysqli_stmt_close($stmt);
+// 2. Get alumni info by JOINING users and alumni_profiles
+// This pulls job/company data that your handler saves in the profile table
+$stmt = $connector->prepare("
+    SELECT u.first_name, u.last_name, u.profile_picture, 
+           ap.current_position, ap.current_company 
+    FROM users u
+    LEFT JOIN alumni_profiles ap ON u.id = ap.user_id 
+    WHERE u.id = ?
+");
+$stmt->bind_param('i', $user_id);
+$stmt->execute();
+$stmt->bind_result($first_name, $last_name, $profile_picture, $job_title, $company);
+$stmt->fetch();
+$stmt->close();
 
+// 3. Stats Queries
 // Pending requests count
-$stmt2 = mysqli_prepare($connector, "SELECT COUNT(*) FROM connections WHERE alumni_id = ? AND status = 'pending'");
-mysqli_stmt_bind_param($stmt2, 'i', $user_id);
-mysqli_stmt_execute($stmt2);
-mysqli_stmt_bind_result($stmt2, $pending_count);
-mysqli_stmt_fetch($stmt2);
-mysqli_stmt_close($stmt2);
+$stmt2 = $connector->prepare("SELECT COUNT(*) FROM connections WHERE alumni_id = ? AND status = 'pending'");
+$stmt2->bind_param('i', $user_id);
+$stmt2->execute();
+$stmt2->bind_result($pending_count);
+$stmt2->fetch();
+$stmt2->close();
 
 // Accepted connections count
-$stmt3 = mysqli_prepare($connector, "SELECT COUNT(*) FROM connections WHERE alumni_id = ? AND status = 'accepted'");
-mysqli_stmt_bind_param($stmt3, 'i', $user_id);
-mysqli_stmt_execute($stmt3);
-mysqli_stmt_bind_result($stmt3, $accepted_count);
-mysqli_stmt_fetch($stmt3);
-mysqli_stmt_close($stmt3);
+$stmt3 = $connector->prepare("SELECT COUNT(*) FROM connections WHERE alumni_id = ? AND status = 'accepted'");
+$stmt3->bind_param('i', $user_id);
+$stmt3->execute();
+$stmt3->bind_result($accepted_count);
+$stmt3->fetch();
+$stmt3->close();
 
 // Unread messages count
-$stmt4 = mysqli_prepare($connector, "SELECT COUNT(*) FROM messages WHERE receiver_id = ? AND is_read = 0");
-mysqli_stmt_bind_param($stmt4, 'i', $user_id);
-mysqli_stmt_execute($stmt4);
-mysqli_stmt_bind_result($stmt4, $unread_count);
-mysqli_stmt_fetch($stmt4);
-mysqli_stmt_close($stmt4);
+$stmt4 = $connector->prepare("SELECT COUNT(*) FROM messages WHERE receiver_id = ? AND is_read = 0");
+$stmt4->bind_param('i', $user_id);
+$stmt4->execute();
+$stmt4->bind_result($unread_count);
+$stmt4->fetch();
+$stmt4->close();
 
 // Story views
-$stmt5 = mysqli_prepare($connector, "SELECT COALESCE(SUM(views), 0) FROM stories WHERE alumni_id = ?");
-mysqli_stmt_bind_param($stmt5, 'i', $user_id);
-mysqli_stmt_execute($stmt5);
-mysqli_stmt_bind_result($stmt5, $story_views);
-mysqli_stmt_fetch($stmt5);
-mysqli_stmt_close($stmt5);
+$stmt5 = $connector->prepare("SELECT COALESCE(SUM(views), 0) FROM stories WHERE alumni_id = ?");
+$stmt5->bind_param('i', $user_id);
+$stmt5->execute();
+$stmt5->bind_result($story_views);
+$stmt5->fetch();
+$stmt5->close();
 
-// Last 3 pending requests
-$stmt6 = mysqli_prepare($connector, "SELECT u.first_name, u.last_name, u.major, u.graduation_year, c.id, c.message
-             FROM connections c JOIN users u ON c.student_id = u.id
-             WHERE c.alumni_id = ? AND c.status = 'pending'
-             ORDER BY c.created_at DESC LIMIT 3");
-mysqli_stmt_bind_param($stmt6, 'i', $user_id);
-mysqli_stmt_execute($stmt6);
-mysqli_stmt_bind_result($stmt6, $r_first, $r_last, $r_major, $r_year, $r_id, $r_message);
+// 4. Fetch Last 3 pending requests
+// FIXED: Joined with student_profiles to get 'major' and 'current_year' 
+// because those columns do not exist in the 'users' table
 $pending_requests = [];
-while (mysqli_stmt_fetch($stmt6)) {
-    $pending_requests[] = [
-        'first_name'      => $r_first,
-        'last_name'       => $r_last,
-        'major'           => $r_major,
-        'graduation_year' => $r_year,
-        'connection_id'   => $r_id,
-        'message'         => $r_message,
-    ];
+$stmt6 = $connector->prepare("
+    SELECT u.first_name, u.last_name, sp.major, sp.current_year, c.id, c.message
+    FROM connections c 
+    JOIN users u ON c.student_id = u.id
+    LEFT JOIN student_profiles sp ON u.id = sp.user_id
+    WHERE c.alumni_id = ? AND c.status = 'pending'
+    ORDER BY c.created_at DESC LIMIT 3
+");
+$stmt6->bind_param('i', $user_id);
+$stmt6->execute();
+$res = $stmt6->get_result();
+while ($row = $res->fetch_assoc()) {
+    $pending_requests[] = $row;
 }
-mysqli_stmt_close($stmt6);
+$stmt6->close();
 
+// 5. Formatting variables for the HTML
 $full_name      = htmlspecialchars(($first_name ?? 'Alumni') . ' ' . ($last_name ?? ''));
 $first_only     = htmlspecialchars($first_name ?? 'Alumni');
 $avatar_letter  = strtoupper(substr($first_name ?? 'A', 0, 1));
@@ -148,7 +160,7 @@ $story_views    = (int)($story_views    ?? 0);
         </div>
 
         <nav class="flex-1 p-3 flex flex-col gap-0.5 overflow-y-auto">
-            <a href="dashboard.php" class="nav-link active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
+            <a href="dashboard_alumni.php" class="nav-link active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm">
                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
             </a>
             <a href="requests.php" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600">
@@ -199,9 +211,13 @@ $story_views    = (int)($story_views    ?? 0);
                     <i data-lucide="bell" class="w-4 h-4 text-gray-500"></i>
                     <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                 </button>
-                <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-sm cursor-pointer">
-                    <?= $avatar_letter ?>
-                </div>
+                <div class="w-9 h-9 rounded-xl bg-primary overflow-hidden flex items-center justify-center text-white font-bold text-sm cursor-pointer">
+                    <?php if (!empty($profile_picture)): ?>
+                         <img src="../<?= htmlspecialchars($profile_picture) ?>" alt="Profile" class="w-full h-full object-cover">
+                    <?php else: ?>
+                         <?= $avatar_letter ?>
+                    <?php endif; ?>
+</div>
             </div>
         </header>
 
