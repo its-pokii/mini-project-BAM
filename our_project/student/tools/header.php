@@ -10,7 +10,7 @@
     <div class="flex items-center gap-4">
       <div class="flex items-center gap-2">
         <img 
-          src="images\1379888206.jpg" 
+          src= <?php echo htmlspecialchars($user['profile_pic'] ?? 'https://via.placeholder.com/150') ?> 
           alt="Profile" 
           class="w-9 h-9 rounded-full object-cover border border-gray-200"
         />
