@@ -1,6 +1,6 @@
 <?php
-include("C:/xampp/htdocs/alumni-project/our_project/includes/headers/free-header.php");
-include("C:/xampp/htdocs/alumni-project/our_project/includes/script-var.php");
+include("../includes/headers/free-header.php");
+include("../includes/script-var.php");
 session_start();
 require_once("config.php"); // DB connection
 

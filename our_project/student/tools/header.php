@@ -9,11 +9,18 @@
     </div>
     <div class="flex items-center gap-4">
       <div class="flex items-center gap-2">
-        <img 
-          src= <?php echo htmlspecialchars($user['profile_pic'] ?? 'https://via.placeholder.com/150') ?> 
-          alt="Profile" 
-          class="w-9 h-9 rounded-full object-cover border border-gray-200"
-        />
+        <?php if (!empty($user['profile_photo'])): ?>
+    <img 
+        src="../<?= htmlspecialchars($user['profile_photo']) ?>"
+        alt="Profile Photo"
+        class="w-12 h-12 rounded-full object-cover"
+    />
+<?php else: ?>
+    <!-- fallback — show initials if no photo -->
+    <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+        <?= strtoupper(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1)) ?>
+    </div>
+<?php endif; ?>
         <span class="text-sm font-medium text-gray-700">Hello, <span class="font-semibold text-blue-600"><?= htmlspecialchars($user['first_name'])?></span></span>
       </div>
     </div>

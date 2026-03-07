@@ -3,12 +3,20 @@ include("tools/userHeaderName.php");
 ?>
 
 <?php 
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+    header("Location: ../login.php");
+    exit;
+}
+
 $stmt1 = mysqli_prepare($connector, 'SELECT COUNT(*) AS total_rows FROM alumni_profiles ');
 mysqli_execute($stmt1);
 $result1 = mysqli_stmt_get_result($stmt1);
 $count = mysqli_fetch_column($result1);
 
+
 ?>
+
 
 
 

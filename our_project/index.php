@@ -1,6 +1,6 @@
 <?php 
-include("C:/xampp/htdocs/alumni-project/our_project/includes/headers/free-header.php");
-include("C:/xampp/htdocs/alumni-project/our_project/includes/script-var.php")
+include("includes/headers/free-header.php");
+include("includes/script-var.php")
 ?>
 
     <body class="bg-[#f8fafc] box-border p-0 m-0 font-['Roboto']">
@@ -84,7 +84,7 @@ include("C:/xampp/htdocs/alumni-project/our_project/includes/script-var.php")
             </div>
         </main>
         <?php 
-        include("C:/xampp/htdocs/alumni-project/our_project/includes/footer.php");
+        include("includes/footer.php");
         ?>
     </body>
 
