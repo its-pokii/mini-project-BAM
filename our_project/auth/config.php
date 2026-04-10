@@ -2,8 +2,8 @@
 try {
     $connector = new mysqli("localhost",
                         "root",
-                        "ZouhairDev2026",
-                        "alumni-network");
+                        "",
+                        "alumni_network");
     
     // echo "<p style='color: green;'>Connected!</p>";
 }

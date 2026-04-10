@@ -9,6 +9,7 @@ if (isset($_SESSION['login_errors'])) {
     unset($_SESSION['login_errors']);
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>

@@ -5,7 +5,6 @@ require 'reset-password-mailer.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
-    $_SESSION['forgot_email'] = $email;
     $get_password_errors = [];
 
 
@@ -45,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $_SESSION['success_reset'] = "Please check your email for the password reset link";
 
-    $reset_password_link = "http://localhost/alumni-project/our_project/reset-password.php";
+    $reset_password_link = "../reset-password.php";
     send_verification_email($email, $user_info['first_name'], $reset_password_link);
     $_SESSION['reset_password_link'] = $reset_password_link;
     header("Location: ../forgot-password.php");
